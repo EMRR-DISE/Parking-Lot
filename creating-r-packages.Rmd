@@ -1,0 +1,104 @@
+---
+title: "Creating R Packages"
+author: "Dave Bosworth"
+date: "2/16/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
+
+# Introduction
+
+R packages are useful collections of data, functions, or a combination of the two along with any relevant documentation that can be installed and used by yourself or others. In this tutorial, we will run through the steps used to create the already existing [`EMRRtools`](https://github.com/EMRR-DISE/EMRRtools) R package from scratch using some useful functions in the [`usethis`](https://usethis.r-lib.org/) R package. Please adapt this code to create any other R package you wish to create.
+
+# Basic Setup
+
+First, we'll want to load and attach the `devtools` and `usethis` R packages and install them if they are not installed on your computer already.
+
+```{r install and load devtools usethis}
+# install.packages("devtools")
+# install.packages("usethis")
+library(devtools)
+library(usethis)
+```
+
+Before creating a new R package, you'll need to make sure that the name you choose isn't in use already and that you are following the naming conventions for R packages. There are three formal naming requirements:
+
+1. The name can only consist of letters, numbers, and periods
+2. It must start with a letter
+3. It cannot end with a period
+
+Use the `available` package and function to evaluate a potential package name.
+
+```{r use available to check name}
+# install.packages("available")
+library(available)
+available("EMRRtools")
+```
+
+Running this code will let you know if your potential package name is valid, already in use, or possibly offensive in some way. Once you settle on a name, you can now use a function from the `usethis` package to create your new R package. 
+
+```{r create r package}
+create_package("C:/Repositories/04_EMRR_Org/EMRRtools")
+```
+
+This will create your basic package structure on your local computer and open it as a project in a separate RStudio session. If you want to use [Git](https://gitforwindows.org/) and [GitHub](https://github.com/) which I highly recommend for version control, easily sharing your package, and collaborating with others, you'll need to run a few other functions from the `usethis` package to set that up. Be sure to run the functions that configure Git and GitHub from the RStudio project of your newly created R package.
+
+First, set up your package with git with `use_git()`. Note that you will need [Git for Windows](https://gitforwindows.org/) installed on your computer.
+
+```{r set up git}
+use_git()
+```
+
+Now, run `use_github()` to connect your package with GitHub. Use the `organisation` argument if you would like the repository to be created under a GitHub organization; otherwise, it will be created under your personal account. Again, note that you will need an account registered on GitHub.
+
+```{r set up github}
+use_github(organisation = "EMRR-DISE")
+```
+
+Now that you are all set up with Git and GitHub, you'll want to complete a few additional tasks to finish with the basic setup of your new R package. These are updating the DESCRIPTION file with information specific to your package, adding a license, and creating a README file. To add a license, you can use [one of the functions](https://usethis.r-lib.org/reference/licenses.html) in `usethis` to accomplish this, including `use_mit_license()`, `use_gpl_license()`, `use_apache_license()`, or `use_ccby_license()`. I usually use the [Apache version 2.0 license](https://choosealicense.com/licenses/apache-2.0/), so we'll add that now with the following code.
+
+```{r add license}
+use_apache_license()
+```
+
+To create a README file, `usethis` also provides a couple of helpful functions to accomplish this. I suggest using `use_readme_rmd()` which allows for you to use Rmarkdown to create your file. This is an improvement over standard markdown because it allows for a richer mix of code and output. If you decide to use a Rmarkdown file for your README file, you'll need to run `devtools::build_readme()` to generate and update the markdown file.
+
+```{r create readme}
+use_readme_rmd()
+```
+
+After updating your README.Rmd file, run `devtools::build_readme()` to generate the README.md file.
+
+```{r build readme md}
+build_readme()
+```
+
+If you are using Git and GitHub, commit your changes that you made to your local repo and push them to the remote repo on GitHub. At this point, the general set up of your R package is complete. In the next section, I'll provide some useful functions to use from the `usethis` package for package development.
+
+# Package Development
+
+I will expand on this section later, but here is a list of useful functions from the `usethis` package to use for package development:
+
+* `use_data_raw()` - Add raw data
+* `use_data()` - Add package data
+* `use_r()` - Add functions (creates and/or opens a script below R/)
+* `load_all()` - Test drive package code
+* `document()` - Build documentation and NAMESPACE
+* `use_package_doc()` - Add package-level documentation
+* `use_package()` - Add package dependency
+* `use_import_from()` - Import a function from another package
+* `use_testthat()` - Set up package to use testthat
+* `use_test()` - Open and/or create a test file
+* `use_spell_check()` - Adds a test to automatically run a spell check on documentation
+* `test()` - Run tests
+* `use_version()` - Update version of package
+* `use_news_md()` - Add a NEWS.md file to the package
+* `use_github_actions()` - Configure a basic R CMD check workflow on GitHub Actions
+* `use_git_ignore()` - Add files to .gitignore
+* `check()` - Run R CMD check
+* `install()` - Install the package
+* `use_github_release()` - Create a GitHub release
+
